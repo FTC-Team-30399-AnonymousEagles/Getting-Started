@@ -27,8 +27,8 @@ public class StarterBot extends LinearOpMode {
 
 
         // Sets the direction of the motors to make sure the robot drives forward and doesn't spin
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait until start button is pressed
         waitForStart();
@@ -67,6 +67,7 @@ public class StarterBot extends LinearOpMode {
                 case 2:
                     carDrive();
                     displayMode = "Car";
+                    break;
                 default:
                     tankDrive();
                     displayMode = "Tank";
@@ -80,12 +81,6 @@ public class StarterBot extends LinearOpMode {
             telemetry.addData("Intake Power", intakeMotor.getPower());
             telemetry.addData("Drive Mode", displayMode);
             telemetry.update();
-
-
-
-
-
-
         }
 
     }
@@ -124,14 +119,18 @@ public class StarterBot extends LinearOpMode {
         forward = gamepad1.right_trigger;
         turn = gamepad1.right_stick_x;
 
-        leftDrive.setPower((forward - backward) + turn);
-        rightDrive.setPower((forward - backward) - turn);
+        leftDrive.setPower((backward - forward) + turn);
+        rightDrive.setPower((backward - forward) - turn);
 
 
     }
     private void tankDrive() {
-        float leftSticky = gamepad1.left_stick_y;
-        float rightSticky = gamepad1.right_stick_y;
+        float leftSticky;
+        float rightSticky;
+
+        leftSticky = gamepad1.left_stick_y;
+        rightSticky = gamepad1.right_stick_y;
+
 
         leftDrive.setPower(leftSticky);
         rightDrive.setPower(rightSticky);
