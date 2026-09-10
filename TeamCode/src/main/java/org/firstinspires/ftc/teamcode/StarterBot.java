@@ -10,6 +10,12 @@ public class StarterBot extends LinearOpMode {
 
     private DcMotor intakeMotor;
 
+    private int driveMode = 0;
+
+    private boolean lastOptionsState = false;
+
+    private String displayMode;
+
 
     @Override
     public void runOpMode() {
@@ -25,7 +31,45 @@ public class StarterBot extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            carDrive();
+            if (gamepad1.dpad_left) {
+                driveMode = 0;
+            } else if (gamepad1.dpad_up) {
+                driveMode = 1;
+            } else if (gamepad1.dpad_right) {
+                driveMode = 2;
+            }
+
+
+            // If triangle is currently pressed and lastOptionsState is false run this if statement
+            // This prevents the button from being pressed again rapidly and switching modes
+            if (gamepad1.triangle && !lastOptionsState) {
+                driveMode++;
+                if (driveMode > 2) {
+                    driveMode = 0;
+                }
+            }
+
+            // Sets lastOptionsState to true or false depending if the button is pressed.
+            lastOptionsState = gamepad1.triangle;
+
+            switch (driveMode) {
+                case 0:
+                    tankDrive();
+                    displayMode = "Tank";
+                    break;
+                case 1:
+                    arcadeDrive();
+                    displayMode = "Arcade";
+                    break;
+                case 2:
+                    carDrive();
+                    displayMode = "Car";
+                default:
+                    tankDrive();
+                    displayMode = "Tank";
+                    break;
+
+            }
             intake();
         }
 
@@ -50,8 +94,6 @@ public class StarterBot extends LinearOpMode {
         // Get stick values
         leftSticky = gamepad1.left_stick_y;
         rightStickx = gamepad1.right_stick_x;
-
-
 
         leftDrive.setPower(leftSticky + rightStickx);
         rightDrive.setPower(leftSticky - rightStickx);
