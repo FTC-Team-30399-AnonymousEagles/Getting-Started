@@ -73,6 +73,11 @@ public class StarterBot extends LinearOpMode {
 
     }
     private void tankDrive() {
+        float leftSticky = gamepad1.left_stick_y;
+        float rightSticky = gamepad1.right_stick_y;
+
+        leftDrive.setPower(leftSticky);
+        rightDrive.setPower(rightSticky);
 
     }
 }
