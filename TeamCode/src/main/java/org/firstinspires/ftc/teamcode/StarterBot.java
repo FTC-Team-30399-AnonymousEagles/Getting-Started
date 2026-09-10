@@ -23,6 +23,9 @@ public class StarterBot extends LinearOpMode {
         leftDrive = hardwareMap.get(DcMotor.class, "lmotor");
         rightDrive = hardwareMap.get(DcMotor.class, "rmotor");
 
+        intakeMotor = hardwareMap.get(DcMotor.class, "imotor");
+
+
         // Sets the direction of the motors to make sure the robot drives forward and doesn't spin
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -71,6 +74,18 @@ public class StarterBot extends LinearOpMode {
 
             }
             intake();
+
+            telemetry.addData("Left Drive Power", leftDrive.getPower());
+            telemetry.addData("Right Drive Power", rightDrive.getPower());
+            telemetry.addData("Intake Power", intakeMotor.getPower());
+            telemetry.addData("Drive Mode", displayMode);
+            telemetry.update();
+
+
+
+
+
+
         }
 
     }
