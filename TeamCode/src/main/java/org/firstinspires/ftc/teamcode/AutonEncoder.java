@@ -68,7 +68,11 @@ public class AutonEncoder extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
+    private DcMotor intakeMotor = null;
+
     private ElapsedTime runtime = new ElapsedTime();
+
+    private ElapsedTime intakeTimer = new ElapsedTime();
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -90,6 +94,7 @@ public class AutonEncoder extends LinearOpMode {
         // Initialize the drive system variables.
         leftDrive = hardwareMap.get(DcMotor.class, "lmotor");
         rightDrive = hardwareMap.get(DcMotor.class, "rmotor");
+        intakeMotor = hardwareMap.get(DcMotor.class, "imotor");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -116,11 +121,28 @@ public class AutonEncoder extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED, 48, 48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
         encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        intake(0.8, 8); // Run intake at 80% speed for 8 seconds
         encoderDrive(DRIVE_SPEED, 24, 24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
+    }
+
+    public void intake(double speed, double time) {
+        if (opModeIsActive()) {
+            intakeTimer.reset();
+            intakeMotor.setPower(speed);
+            while (opModeIsActive() && (intakeTimer.seconds() < time)) {
+                telemetry.addData("Intake time", "%.2f / %.2f",
+                        intakeTimer.seconds(), time);
+                telemetry.addData("Intake speed", "%4d",
+                        intakeMotor.getPower());
+                telemetry.update();
+            }
+
+            intakeMotor.setPower(0);
+        }
     }
 
     /*
