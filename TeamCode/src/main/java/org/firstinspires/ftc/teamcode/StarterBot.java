@@ -19,9 +19,10 @@ public class StarterBot extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // Assigning motors to variables. Initilizing
+        // Assigning motors to variables. Initializing
         leftDrive = hardwareMap.get(DcMotor.class, "lmotor");
         rightDrive = hardwareMap.get(DcMotor.class, "rmotor");
+        intakeMotor = hardwareMap.get(DcMotor.class, "imotor");
 
         // Sets the direction of the motors to make sure the robot drives forward and doesn't spin
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -64,6 +65,7 @@ public class StarterBot extends LinearOpMode {
                 case 2:
                     carDrive();
                     displayMode = "Car";
+                    break;
                 default:
                     tankDrive();
                     displayMode = "Tank";
