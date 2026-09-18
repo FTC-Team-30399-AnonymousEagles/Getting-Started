@@ -3,46 +3,30 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
 @TeleOp
 public class StarterBot extends LinearOpMode {
-    private DcMotor leftDrive;
-    private DcMotor rightDrive;
+    public DcMotor leftDrive;
+    public DcMotor rightDrive;
+    public DcMotor intakeMotor;
+    public int driveMode = 0;
 
-    private DcMotor intakeMotor;
+    public boolean lastOptionsState = false;
 
-    private int driveMode = 0;
-
-    private boolean lastOptionsState = false;
-
-    private String displayMode;
-
+    public String displayMode = "Tank";
 
     @Override
     public void runOpMode() {
-        // Assigning motors to variables. Initializing
         leftDrive = hardwareMap.get(DcMotor.class, "lmotor");
         rightDrive = hardwareMap.get(DcMotor.class, "rmotor");
         intakeMotor = hardwareMap.get(DcMotor.class, "imotor");
 
-        // Sets the direction of the motors to make sure the robot drives forward and doesn't spin
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        // Wait until start button is pressed
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.dpad_left) {
-                driveMode = 0;
-            } else if (gamepad1.dpad_up) {
-                driveMode = 1;
-            } else if (gamepad1.dpad_right) {
-                driveMode = 2;
-            }
-
-
-            // If triangle is currently pressed and lastOptionsState is false run this if statement
-            // This prevents the button from being pressed again rapidly and switching modes
             if (gamepad1.triangle && !lastOptionsState) {
                 driveMode++;
                 if (driveMode > 2) {
@@ -50,8 +34,15 @@ public class StarterBot extends LinearOpMode {
                 }
             }
 
-            // Sets lastOptionsState to true or false depending if the button is pressed.
-            lastOptionsState = gamepad1.triangle;
+            lastOptionsState = gamepad1.triangle; //
+
+            if (gamepad1.dpad_left) {
+                driveMode = 0;
+            } else if (gamepad1.dpad_up) {
+                driveMode = 1;
+            } else if (gamepad1.dpad_right) {
+                driveMode = 2;
+            }
 
             switch (driveMode) {
                 case 0:
@@ -70,58 +61,63 @@ public class StarterBot extends LinearOpMode {
                     tankDrive();
                     displayMode = "Tank";
                     break;
-
             }
             intake();
-        }
 
+            telemetry.addData("Left Power", leftDrive.getPower()); // Displays leftmotor power.
+            telemetry.addData("Right Power", leftDrive.getPower()); // Displays leftmotor power.
+            telemetry.addData("Right Stick X", gamepad1.right_stick_x); // Displays rightstick axis
+            telemetry.addData("Intake Power", intakeMotor.getPower());
+            telemetry.addData("Position", leftDrive.getCurrentPosition()); // Shows current robot rotation count position. So 1434 1435
+            telemetry.addData("Drive Mode", displayMode);
+            telemetry.update();
+
+        }
     }
 
-
-    private void intake() {
-        float outtake;
+    public void intake() {
         float intake;
+        float outtake;
 
-
-        outtake = gamepad2.left_trigger;
-        intake = gamepad2.right_trigger;
+        intake = gamepad2.right_trigger; // 0 to 1
+        outtake = gamepad2.left_trigger; // 0 to 1
 
         intakeMotor.setPower(intake - outtake);
     }
 
-    private void arcadeDrive() {
-        float leftSticky;
-        float rightStickx;
+    public void tankDrive() {
+        float leftStickY;
+        float rightStickY;
 
-        // Get stick values
-        leftSticky = gamepad1.left_stick_y;
-        rightStickx = gamepad1.right_stick_x;
+        leftStickY = -gamepad1.left_stick_y;
+        rightStickY = -gamepad1.right_stick_y;
 
-        leftDrive.setPower(leftSticky + rightStickx);
-        rightDrive.setPower(leftSticky - rightStickx);
-
+        leftDrive.setPower(leftStickY);
+        rightDrive.setPower(rightStickY);
     }
 
-    private void carDrive() {
+    public void arcadeDrive() {
+        float leftStickY;
+        float rightStickX;
+
+        leftStickY = -gamepad1.left_stick_y;
+        rightStickX = gamepad1.right_stick_x;
+
+        leftDrive.setPower(leftStickY + rightStickX);
+        rightDrive.setPower(leftStickY - rightStickX);
+    }
+
+    public void carDrive() {
         float forward;
         float backward;
         float turn;
 
-        backward = gamepad1.left_trigger;
         forward = gamepad1.right_trigger;
+        backward = gamepad1.left_trigger;
         turn = gamepad1.right_stick_x;
 
         leftDrive.setPower((forward - backward) + turn);
         rightDrive.setPower((forward - backward) - turn);
-
-
     }
-    private void tankDrive() {
-        float leftSticky = gamepad1.left_stick_y;
-        float rightSticky = gamepad1.right_stick_y;
 
-        leftDrive.setPower(leftSticky);
-        rightDrive.setPower(rightSticky);
-
-    }
 }
