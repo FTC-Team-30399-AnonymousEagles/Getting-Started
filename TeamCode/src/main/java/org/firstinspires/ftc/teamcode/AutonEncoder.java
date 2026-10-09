@@ -136,8 +136,8 @@ public class AutonEncoder extends LinearOpMode {
             while (opModeIsActive() && (intakeTimer.seconds() < time)) {
                 telemetry.addData("Intake time", "%.2f / %.2f",
                         intakeTimer.seconds(), time);
-                telemetry.addData("Intake speed", "%4d",
-                        intakeMotor.getPower());
+                //telemetry.addData("Intake speed", "%4d",
+                  //      intakeMotor.getPower());
                 telemetry.update();
             }
 
