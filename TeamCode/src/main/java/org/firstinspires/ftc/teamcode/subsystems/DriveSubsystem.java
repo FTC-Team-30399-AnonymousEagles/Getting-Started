@@ -9,7 +9,10 @@ public class DriveSubsystem {
 
     public DriveSubsystem(HardwareMap hardwareMap) {
         leftDrive = hardwareMap.get(DcMotor.class, "lmotor");
-        rightDrive = hardwareMap.get(DcMotor.class, "rmotor");    
+        rightDrive = hardwareMap.get(DcMotor.class, "rmotor"); 
+        
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);    
     }
 
     public void tankDrive(double leftStickY, double rightStickY) {
