@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -7,12 +9,12 @@ public class DriveSubsystem {
     public DcMotor leftDrive;
     public DcMotor rightDrive;
 
-    public DriveSubsystem(HardwareMap hardwareMap) {
+    public DriveSubsystem(@NonNull HardwareMap hardwareMap) {
         leftDrive = hardwareMap.get(DcMotor.class, "lmotor");
-        rightDrive = hardwareMap.get(DcMotor.class, "rmotor"); 
-        
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);    
+        rightDrive = hardwareMap.get(DcMotor.class, "rmotor");
+
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
     public void tankDrive(double leftStickY, double rightStickY) {
